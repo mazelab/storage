@@ -1,0 +1,255 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid text-left cssBoxCenter">
+            <a href="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_delete') ?>" class="jsDelete btn" 
+               title="<?= $this->translate('Delete storage') ?>">
+                <i class="icon-trash"></i>
+                <?= $this->translate('Delete storage') ?>
+            </a>
+            <a class="jsChangeState btn inactive" title="<?= $this->translate('Activate') ?>"
+               href="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_enable') ?>" 
+               style="<?= !$this->toBool('storage/status')? '' : 'display:none'; ?>">
+                <i class="icon-minus-sign"></i>
+                <?= $this->translate('Activate') ?>
+            </a>
+            <a class="jsChangeState btn" title="<?= $this->translate('Deactivate') ?>"
+               href="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_disable') ?>"
+               style="<?= $this->toBool('storage/status')? '' : 'display:none'; ?>">
+                <i class="icon-ok-sign"></i>
+                <?= $this->translate('Deactivate') ?>
+            </a>
+        </div>
+        <div class="row-fluid text-right cssStatusText cssBigItem">
+            <span <?= !$this->toBool("storage/status") ? "style=\"display:none;\"" : null; ?>
+                class="span11 jsStorageState stat online">
+                <?= $this->translate('Online') ?>
+            </span>
+            <span <?= $this->toBool("storage/status") ? "style=\"display:none;\"" : null; ?>
+                class="span11 jsStorageState stat offline">
+                <?= $this->translate('Offline') ?>
+            </span>
+        </div>
+        <div class="row-fluid ">
+            <div class="cssUserImage span2">
+                <img name="avatar" class="img-polaroid" alt="<?= $this->translate('avatar') ?>"
+                     src="<?= $this->baseUrl() ?>/img/dummy_domain_200.png">
+            </div>
+            <div class="span10">
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label>
+                            <?= $this->translate('Name') ?>
+                        </label>
+                    </dt>
+                    <dd class="span9">
+                        <?= $this->html('storage/name') ?>
+                    </dd>
+                </dl>
+                
+                <? if($this->toBool('storage/clientLabel')): ?>
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label>
+                            <?= $this->translate('Client') ?>
+                        </label>
+                    </dt>
+                    <dd class="span9">
+                        <?= $this->html('storage/clientLabel') ?>
+                    </dd>
+                </dl>
+                <? endif; ?>
+                
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label>
+                            <?= $this->translate('Quota in MB') ?>
+                        </label>
+                    </dt>
+                    <dd class="span9">
+                        <?= $this->form->quota ?>
+                    </dd>
+                </dl>
+                
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label class="optional">
+                            <?= $this->translate('Password') ?>
+                        </label>
+                    </dt>
+                    <dd class="span6">
+                        <span id="changePassword" class="cssColorGray">
+                            <?= $this->translate('Change password') ?>
+                        </span>
+                    </dd>
+                </dl>
+                
+                <div id="changePasswordContent" class="cssPasswordFields" style="display:none;">
+                    <dl class="row-fluid">
+                        <dt class="span3">
+                            <label id="newpassword">
+                                <?= $this->translate('New password') ?>
+                            </label>
+                        </dt>
+                        <dd class="span6">
+                            <?= $this->form->password ?>
+                        </dd>
+                    </dl>
+                    <dl class="row-fluid">
+                        <dt class="span3">
+                            <label id="confirmpassword">
+                                <?= $this->translate('Confirm password') ?>
+                            </label>
+                        </dt>
+                        <dd class="span6">
+                            <?= $this->form->confirmPassword ?>
+                        </dd>
+                    </dl>
+                    <div class="row-fluid">
+                        <a id="passwordCancel" class="btn btn-info"
+                           title="<?= $this->translate('Cancel') ?>">
+                            <?= $this->translate('Cancel') ?>
+                        </a>
+                        <a id="passwordSave" class="btn btn-info"
+                           title="<?= $this->translate('Save') ?>">
+                            <?= $this->translate('Save') ?>
+                        </a>
+                    </div>
+                </div>
+                
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label>
+                            <?= $this->translate('Node') ?>
+                        </label>
+                    </dt>
+                    <dd class="span9">
+                        <?= $this->form->nodeId ?>
+                        <a id="nodeChange" class="btn btn-info"
+                           title="<?= $this->translate('Ok') ?>">
+                            <?= $this->translate('Ok') ?>
+                        </a>
+                    </dd>
+                </dl>
+                
+            </div>
+        </div>
+    </div>
+    <div id="jsConfirmDeleteStorage" class="modal hide fade">
+        <div class="modal-body">
+            <p><?= $this->translate('Shall the Storge really be deleted?'); ?></p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn jsButtonCancel" data-dismiss="modal"><?= $this->translate('cancel'); ?></a>
+            <a class="btn btn-primary jsButtonDelete" data-dismiss="modal"><?= $this->translate('ok'); ?></a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var currentNode = $('#nodeId').val();
+        
+        $('.jsEditable').mazeEditable('<?= $this->url(array(), 'mazelab-storage_edit') ?>?format=json', mazeEditableOptions);
+        
+        $(".jsDelete").click(function(event){
+            var dialog = $("#jsConfirmDeleteStorage").modal({backdrop:"static", show:true}),
+                submit = function(event) {
+                    $.ajax({
+                        url : event.data.href,
+                        data: {format: "json"},
+                        success:function(data){
+                            if (data.result === true){
+                                location.href = "<?= $this->url(array(), "mazelab-storage_index") ?>";
+                            }
+                            setMessages(data);
+                        }
+                    });
+                };
+
+            dialog.find(".jsButtonDelete").unbind().bind("click", this, submit);
+            event.preventDefault();
+        });
+
+        $(".jsChangeState").click(function(){
+            resetMessages();
+            var self = $(this).addClass("disabled");
+
+            !self.data("locked") && $.ajax({
+                url: this.href,
+                data: {format: "json"},
+                success:function(data){
+                    if (data.result === true){
+                        $(".jsChangeState").toggle();
+                        $(".jsStorageState").toggle();
+                    }
+
+                    setMessages(data);
+                },
+                complete:function(){
+                    self.removeClass("disabled").data("locked", false);
+                }
+            });
+            self.data("locked", true);
+
+            return false;
+        });
+        
+        $("#changePassword, #passwordCancel").click(function(){
+            $('#password, #confirmPassword').val('');
+            $("#changePasswordContent").toggle();
+            resetTooltips();
+            return false;
+        });
+        $("#passwordSave").click(function() {
+            var self = $(this);
+            if (self.attr('disabled')) {
+                return false;
+            }
+            self.attr('disabled', true);
+            resetTooltips();
+            
+            $.ajax({
+                url: '<?= $this->url(array(), 'mazelab-storage_edit') ?>?format=json',
+                data: $('#password, #confirmPassword').serialize(),
+                type: 'POST',
+                success:function(data) {
+                    if (data.result === true) {
+                        $('#passwordCancel').click();
+                    }
+                    setComboTooltip(data,'#passwordSave');
+                },
+                complete:function() {
+                    self.attr('disabled', false);
+                }
+            });
+            return false;
+        });
+        
+        $('#nodeChange').click(function() {
+            var node = $('#nodeId'),
+                self = $(this);
+            if (self.attr('disabled') || node.val() === currentNode) {
+                return false;
+            }
+            self.attr('disabled', true);
+            resetTooltips();
+            
+            $.ajax({
+                url: '<?= $this->url(array(), 'mazelab-storage_edit') ?>?format=json',
+                data: $('#nodeId').serialize(),
+                type: 'POST',
+                success:function(data) {
+                    if (data.result === true) {
+                        currentNode = node.val();
+                    }
+                    setComboTooltip(data,'#nodeChange');
+                },
+                complete:function() {
+                    self.attr('disabled', false);
+                }
+            });
+            return false;
+        });
+        
+    });
+</script>

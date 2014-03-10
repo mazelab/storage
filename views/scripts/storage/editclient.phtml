@@ -1,0 +1,79 @@
+<div class="cssContentMiddle grid_16">
+    <div class="grid_16 alpha omega cssHeaderList">
+        <h1 class="grid_8">
+            Storage <?= $this->html("storage/name"); ?>
+        </h1>
+    </div>
+
+    <div class="cssDetailPadding30 cssForm grid_16">
+        <form id='formStorage' mehod='POST'
+              action="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_edit'); ?>?format=json">
+            <dl class="grid_16">
+                <dt class="grid_3">
+                    <label id="newpassword">
+                        <?= $this->translate('New password') ?>
+                    </label>
+                </dt>
+                <dd class='grid_8'>
+                    <?= $this->form->password ?>
+                </dd>
+            </dl>
+            <dl class="grid_16">
+                <dt class="grid_3">
+                    <label id="confirmpassword">
+                        <?= $this->translate('Confirm password') ?>
+                    </label>
+                </dt>
+                <dd class='grid_8'>
+                    <?= $this->form->confirmPassword ?>
+                </dd>
+            </dl>
+        </form>
+    </div>
+    
+    <div class="cssDetailToolbar grid_16">
+        <a id="storageSave" class="jsButton"
+           title="<?= $this->translate('Save') ?>">
+            <?= $this->translate('Save') ?>
+        </a>
+    </div>
+</div>
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('.jsButton').button();
+        
+        $('#storageSave').click(function() {
+            $(this).button('disable');
+            $('#formStorage').submit();
+            return false;
+        });
+        
+        $('#formStorage').submit(function() {
+            resetTooltips();
+            var self = $(this);
+            
+            $.ajax(self.attr('action'), {
+                type: 'POST',
+                data: self.serialize(),
+                success: function(data) {
+                    if(data.result === true) {
+                        setSuccessTooltip("<?= $this->translate('Success') ?>", "#password");
+                        $('#password').val('');
+                        $('#confirmPassword').val('');
+                        
+                        setTimeout(function(){
+                            resetTooltips();
+                        }, 2500);
+                    } else {
+                        setTooltips(data, '#password');
+                    }
+                },
+                complete: function() {
+                    $('#storageSave').button('enable');
+                }
+            });
+            return false;
+        });
+    });
+</script>

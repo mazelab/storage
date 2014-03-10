@@ -1,0 +1,77 @@
+<div class="row-fluid">
+    <div class="span12" id="jsNewsPagerContainer">
+        <div class="row-fluid cssListing">
+            <div class="span12 cssHeaderList">
+                <div class="cssButton span12">
+                    <a class="btn btn-info jsButton" href="<?= $this->url(array(), 'mazelab-storage_add') ?>">
+                        <?= $this->translate("New Storage") ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <?= $this->render('storage/pager.phtml') ?>
+
+        <div id="newsListing" class="row-fluid cssListing">
+            <ul class="span12 unstyled">
+                <? foreach($this->html('pager/data') as $id => $storage) :?>
+                <li class="row-fluid">
+                    <div class="span12
+                    <? if($storage->toBool('delete')): ?>
+                        cssStatusDelete
+                    <? elseif($storage->toBool('conflicted')): ?>
+                        cssStatusConflicted
+                    <? elseif($storage->toBool('pending')): ?>
+                        cssStatusPending
+                    <? endif; ?>">
+                        <span class="cssListItem span12">
+                            <a  title="<?= $this->translate("detail") ?>"
+                                href="<?= $this->url(array($id), 'mazelab-storage_edit') ?>">
+                                <span>
+                                    <?= $storage->html('name') ?>
+                                </span>
+                                <? if($storage->toBool('pending') || $storage->toBool('delete')): ?>
+                                <span class="icon-refresh cssStatusIconPending"></span>
+                                <? endif; ?>
+                            </a>
+                        </span>
+                    </div>
+                </li>
+                <? endforeach; ?>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#storageSearch').mazeSearch({
+            source: '<?= $this->url(array(), 'mazelab-storage_index') ?>?format=html',
+            limit: '<?= $this->html('pager/limit') ?>',
+            total: '<?= $this->html('pager/total') ?>',
+            page: '<?= $this->html('pager/page') ?>',
+            lastPosition: '<?= $this->html('pager/lastPosition') ?>',
+            term: '<?= $this->html('pager/searchTerm') ?>'
+        });
+        
+        $('#jsPagerNext').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('next');
+            return false;
+        });
+
+        $('#jsPagerPrev').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('prev');
+            return false;
+        });
+
+        $('.jsPagerFirst').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('first');
+            return false;
+        });
+
+        $('.jsPagerLast').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('last');
+            return false;
+        });
+    });
+</script>

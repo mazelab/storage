@@ -1,0 +1,45 @@
+<? foreach($this->html('pager/data') as $storageId => $storage): ?>
+<li class="grid_16 alpha omega
+    <? if($storage->toBool('delete')): ?>
+        cssStatusDelete
+    <? elseif($storage->toBool('conflicted')): ?>
+        cssStatusConflicted
+    <? elseif($storage->toBool('pending')): ?>
+        cssStatusPending
+    <? endif; ?>">
+    <div id="listStorage-<?= $storage->html("name"); ?>" class="grid_10 alpha omega">
+        <? if($storage->toBool('delete')): ?>
+        <a class="jsStorageDetail grid_16">
+        <? else: ?>
+        <a class="jsStorageDetail grid_16" title="<?= $this->translate('Edit') ?>"
+           href="<?= $this->url(array($storage->html("_id")), "mazelab-storage_edit") ?>">
+        <? endif; ?>
+            <?= $storage->html("name"); ?> 
+            <? if($storage->toBool('pending') || $storage->toBool('delete')): ?>
+            <div class="ui-icon ui-icon-refresh cssStatusIconPending"></div>
+            <? endif; ?>
+        </a>
+    </div>
+    <div class="grid_6 alpha omega cssAction">
+        <? if(!$storage->toBool('delete')): ?>
+        <a href="<?= $this->url(array($storage->html("_id")), "mazelab-storage_edit")?>"
+           class="jsIconDetail cssIconEdit cssIcon" title="<?= $this->translate("Detail"); ?>">
+        </a>
+        <? endif; ?>
+    </div>
+</li>
+<? endforeach; ?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".jsIconDetail").button({
+            icons: {primary: "ui-icon-document"},
+            text: false
+        });
+        
+        $('#searchInput').mazeSearch('option', 'page', '<?= $this->html('pager/page') ?>');
+        $('#searchInput').mazeSearch('option', 'total', '<?= $this->html('pager/total') ?>');
+        $('#searchInput').mazeSearch('option', 'limit', '<?= $this->html('pager/limit') ?>');
+        $('#searchInput').mazeSearch('option', 'lastPosition', '<?= $this->html('pager/lastPosition') ?>');
+    });
+</script>
