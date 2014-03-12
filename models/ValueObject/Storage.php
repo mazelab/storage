@@ -46,7 +46,7 @@ class MazelabStorage_Model_ValueObject_Storage
                 ->setMessageVars($this->getName())->setData($this->getConflicts())
                 ->setAction(self::LOG_ACTION_STORAGE_DIFF)
                 ->setModuleRef(MazelabStorage_Model_StorageManager::MODULE_NAME)
-                ->setRoute(array($this->getId()), 'mazelab-storage_diffStorage')
+                ->setRoute(array($this->getId()), 'mazelab-storage_edit')
                 ->setNodeRef($this->getData('nodeId'))
                 ->saveByContext($this->getName());
     }

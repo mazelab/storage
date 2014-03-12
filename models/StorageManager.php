@@ -347,6 +347,28 @@ class MazelabStorage_Model_StorageManager
     }
 
     /**
+     * resolve a certain conflicted storage with given data
+     *
+     * @param string $storageId
+     * @param array $data
+     * @return bool
+     */
+    public function resolveStorage($storageId, array $data)
+    {
+        if(!($storage = $this->getStorage($storageId))) {
+            return false;
+        }
+
+        if(!$storage->setRemoteData($data)->setData($data)->setFlags()->save()) {
+            return false;
+        }
+
+        $storage->apply();
+
+        return $storage->resolveDiff();
+    }
+
+    /**
      * unassign node of a certain storage
      * 
      * @param string $storageId

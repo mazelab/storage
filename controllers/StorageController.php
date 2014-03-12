@@ -55,6 +55,7 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
                     ->addActionContext('editclient', 'json')
                     ->addActionContext('indexclient', 'html')
                     ->addActionContext('indexadmin', 'html')
+                    ->addActionContext('diff', 'json')
                     ->initContext();
         
         // set view messages from MessageManager
@@ -95,6 +96,32 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
         
         $this->view->result = $storageManager->disableStorage($storageId);
     }
+
+    public function diffAction()
+    {
+        $storageManager = MazelabStorage_Model_DiFactory::getStorageManager();
+        $storageId = $this->getParam('storageId');
+
+        if(!$storageId || !($storage = $storageManager->getStorage($storageId))) {
+            Core_Model_DiFactory::getMessageManager()->addError(self::MESSAGE_NOT_FOUND);
+            return $this->forward('index');
+        }
+
+        $form = new MazelabStorage_Form_Diff();
+        if(!$this->getRequest()->isPost() || !($subForm = $form->getSubForm(key($this->getRequest()->getPost())))) {
+            $form->local->setDefaults($storage->getData());
+            $form->remote->setDefaults($storage->getRemoteData());
+        } else {
+            if($subForm->isValid($this->getRequest()->getPost())) {
+                $this->view->result = $storageManager->resolveStorage($storageId, $subForm->getUnfilteredValues());
+            } else {
+                Core_Model_DiFactory::getMessageManager()->setErrors($form->getMessages());
+            }
+        }
+
+        $this->view->form = $form;
+        $this->view->storage = $storage->getData();
+    }
     
     public function deleteAction()
     {
@@ -125,6 +152,9 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
         if(!($storage = $storageManager->getStorageAsArray($storageId))) {
             Core_Model_DiFactory::getMessageManager()->addError(self::MESSAGE_NOT_FOUND);
             return $this->forward('index');
+        }
+        if(array_key_exists('conflicted', $storage) && $storage['conflicted']) {
+            return $this->forward('diff');
         }
         
         $form = new MazelabStorage_Form_Edit();
