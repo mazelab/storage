@@ -45,20 +45,7 @@
                         <?= $this->html('storage/name') ?>
                     </dd>
                 </dl>
-                
-                <? if($this->toBool('storage/clientLabel')): ?>
-                <dl class="row-fluid">
-                    <dt class="span3">
-                        <label>
-                            <?= $this->translate('Client') ?>
-                        </label>
-                    </dt>
-                    <dd class="span9">
-                        <?= $this->html('storage/clientLabel') ?>
-                    </dd>
-                </dl>
-                <? endif; ?>
-                
+
                 <dl class="row-fluid">
                     <dt class="span3">
                         <label>
@@ -115,7 +102,22 @@
                         </a>
                     </div>
                 </div>
-                
+
+                <dl class="row-fluid">
+                    <dt class="span3">
+                        <label>
+                            <?= $this->translate('Client') ?>
+                        </label>
+                    </dt>
+                    <dd class="span9">
+                        <?= $this->form->clientId ?>
+                        <a id="clientChange" class="btn btn-info"
+                           title="<?= $this->translate('Ok') ?>">
+                            <?= $this->translate('Ok') ?>
+                        </a>
+                    </dd>
+                </dl>
+
                 <dl class="row-fluid">
                     <dt class="span3">
                         <label>
@@ -148,6 +150,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var currentNode = $('#nodeId').val();
+        var currentClient = $('#clientId').val();
         
         $('.jsEditable').mazeEditable('<?= $this->url(array(), 'mazelab-storage_edit') ?>?format=json', mazeEditableOptions);
         
@@ -243,6 +246,32 @@
                         currentNode = node.val();
                     }
                     setComboTooltip(data,'#nodeChange');
+                },
+                complete:function() {
+                    self.attr('disabled', false);
+                }
+            });
+            return false;
+        });
+
+        $('#clientChange').click(function() {
+            var client = $('#clientId'),
+                self = $(this);
+            if (self.attr('disabled') || client.val() === currentClient) {
+                return false;
+            }
+            self.attr('disabled', true);
+            resetTooltips();
+
+            $.ajax({
+                url: '<?= $this->url(array(), 'mazelab-storage_edit') ?>?format=json',
+                data: $('#clientId').serialize(),
+                type: 'POST',
+                success:function(data) {
+                    if (data.result === true) {
+                        currentClient = client.val();
+                    }
+                    setComboTooltip(data,'#clientChange');
                 },
                 complete:function() {
                     self.attr('disabled', false);

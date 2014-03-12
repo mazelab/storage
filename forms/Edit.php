@@ -39,7 +39,6 @@ class MazelabStorage_Form_Edit extends Zend_Form
         
         $this->addElement('select', 'clientId', array(
             "label" => "Client",
-            "readonly" => true,
             "multiOptions" => array(
                 "" => "unassigned"
             ),
