@@ -34,6 +34,11 @@ class MazelabStorage_Model_Dataprovider_Core_Data
     CONST KEY_NODEID = 'nodeId';
 
     /**
+     * name of the imported flag
+     */
+    CONST KEY_IMPORTED = 'imported';
+
+    /**
      * @var MongoDb_Mongo
      */
     protected $_mongoDb;

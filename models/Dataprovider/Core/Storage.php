@@ -10,8 +10,23 @@ class MazelabStorage_Model_Dataprovider_Core_Storage
     implements MazelabStorage_Model_Dataprovider_Interface_Storage
 {
     
-    CONST COLLECTION_NAME = 'storages';    
-    
+    CONST COLLECTION_NAME = 'storages';
+
+    /**
+     * gets all storages with the imported flag
+     *
+     * @return int
+     */
+    public function countStoragesWithImportedFlag()
+    {
+        $result = array();
+        $query = array(
+            self::KEY_IMPORTED => true
+        );
+
+        return $this->_getStorageCollection()->find($query)->count();
+    }
+
     /**
      * deletes a certain storage
      * 
@@ -141,7 +156,7 @@ class MazelabStorage_Model_Dataprovider_Core_Storage
         
         return $result;
     }
-    
+
     /**
      * sets storage with given data
      * 

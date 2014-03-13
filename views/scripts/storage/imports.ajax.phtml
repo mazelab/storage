@@ -1,0 +1,135 @@
+<div class="cssContentMiddle grid_16">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>
+                <?= $this->translate('List of unchecked imported storages') ?>
+            </h3>
+            <span class="span12">
+                <?= $this->translate('Please check the client assignments') ?>
+            </span>
+        </div>
+        <div class="span12">
+            <?= $this->render('storage/pager.phtml') ?>
+
+            <div class="row-fluid cssListing">
+                <? if(!$this->toBool('pager/data')): ?>
+                    <div>
+                        <?= $this->translate('There are no imported storages') ?>
+                    </div>
+                <? else: ?>
+                    <ul class="span12 unstyled">
+                        <? foreach($this->html('pager/data') as $id => $storage) :?>
+                            <li class="row-fluid">
+                                <div class="span12">
+                                    <h4>
+                                        Storage <?= $storage->html('name') ?>
+                                    </h4>
+                                </div>
+
+                                <div class="span12">
+                                    <?= $this->translate('Quota') ?>:
+                                    <?= $storage->html("quota/local") ?> MB
+                                </div>
+                                <div class="span12">
+                                    <?= $this->translate('Status') ?>:
+                                    <? if($storage->toBool("status/local")): ?>
+                                        <?= $this->translate('enabled') ?>
+                                    <? else: ?>
+                                        <?= $this->translate('disabled') ?>
+                                    <? endif; ?>
+                                </div>
+                                <? if($storage->toBool('nodeId')): ?>
+                                    <div class="span12">
+                                        <?= $this->translate('Node') ?>:
+                                        <?= $storage->html("nodeName") ?>
+                                    </div>
+                                <? endif; ?>
+
+                                <div class="span12">
+                                    <div class="span3">
+                                        <?= $this->translate('Client') ?>:
+                                    </div>
+
+                                    <form id="formImport-<?= $storage->html('_id') ?>" class="jsButtonImport">
+                                        <input type="hidden" name="storageId" value="<?= $storage->html('_id') ?>">
+                                        <?= $this->form->clientId ?>
+
+                                        <input id="buttonImport-<?= $storage->html('_id') ?>" type="submit"
+                                               class="btn btn-info jsSubmitImport" value="<?= $this->translate('Import') ?>" />
+                                    </form>
+                                </div>
+                            </li>
+                        <? endforeach; ?>
+                    </ul>
+                <? endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#storageSearch').mazeSearch({
+            source: '<?= $this->url(array(), 'mazelab-storage_imports') ?>?format=html',
+            limit: '<?= $this->html('pager/limit') ?>',
+            total: '<?= $this->html('pager/total') ?>',
+            page: '<?= $this->html('pager/page') ?>',
+            lastPosition: '<?= $this->html('pager/lastPosition') ?>',
+            term: '<?= $this->html('pager/searchTerm') ?>'
+        });
+
+        $('#jsPagerNext').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('next');
+            return false;
+        });
+
+        $('#jsPagerPrev').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('prev');
+            return false;
+        });
+
+        $('.jsPagerFirst').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('first');
+            return false;
+        });
+
+        $('.jsPagerLast').unbind("click").click(function() {
+            $('#storageSearch').mazeSearch('last');
+            return false;
+        });
+
+        $('.jsButtonImport').submit(function() {
+            resetMessages();
+            var self = $(this),
+                buttonId = self.children('.jsSubmitImport').attr('id');
+
+            $('.jsSubmitImport').addClass("disabled");
+            !self.data("locked") && $.ajax({
+                type: 'POST',
+                url: '<?= $this->url(array(), 'mazelab-storage_imports') ?>?format=json',
+                data: self.serialize(),
+                success:function(data){
+                    if(data.result === true) {
+                        $('#storageSearch').mazeSearch('current');
+                    } else {
+                        setTooltips(data, '#' + buttonId);
+                    }
+                },
+                error: function() {
+                    setErrorTooltip(['<?= $this->translate('Request failed') ?>'], '#' + buttonId);
+                },
+                complete:function(){
+                    $('.jsSubmitImport').removeClass("disabled");
+                    $('.jsButtonImport').data("locked", false);
+
+                    setTimeout(function(){
+                        resetTooltips();
+                    }, 2500);
+                }
+            });
+            $('.jsButtonImport').data("locked", true);
+
+            return false;
+        });
+    });
+</script>

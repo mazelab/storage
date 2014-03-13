@@ -111,7 +111,21 @@ class MazelabStorage_Model_StorageManager
 
         return $storage->getId();
     }
-    
+
+    /**
+     * count all storages with imported flag
+     *
+     * @return int
+     */
+    public function countStoragesWithImportedFlag()
+    {
+        if(!($count = $this->_getProvider()->countStoragesWithImportedFlag()) || !is_int($count)) {
+            return 0;
+        }
+
+        return $count;
+    }
+
     /**
      * deletes storage in maze
      * 
@@ -308,6 +322,29 @@ class MazelabStorage_Model_StorageManager
         }
         
         return $storages;
+    }
+
+    /**
+     * imports a certain storage with the given client assignment
+     *
+     * @param string $storageId
+     * @param string $clientId
+     * @return bool
+     */
+    public function importStorage($storageId, $clientId)
+    {
+        if(!($storage = $this->getStorage($storageId))) {
+            return false;
+        }
+
+        $storage->setData(array('clientId' => $clientId))->apply();
+        if(!$storage->unsetProperty('imported')->setFlags()->save()) {
+            return false;
+        }
+
+        MazelabStorage_Model_DiFactory::getReportManager()->writeCheckedImportLog();
+
+        return true;
     }
     
     /**

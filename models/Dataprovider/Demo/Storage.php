@@ -21,7 +21,25 @@ class MazelabStorage_Model_Dataprovider_Demo_Storage
     {
         return $this->_getCollection(self::COLLECTION_NAME);
     }
-    
+
+    /**
+     * counts storages with imported flag
+     *
+     * @return int
+     */
+    public function countStoragesWithImportedFlag()
+    {
+        $result = array();
+
+        foreach($this->_getCollection(self::COLLECTION_NAME) as $storageId => $storage) {
+            if(array_key_exists('imported', $storage) && $storage['imported'] === true) {
+                $result[$storageId] = $storage;
+            }
+        }
+
+        return count($result);
+    }
+
     /**
      * deletes a certain storage
      * 
@@ -129,7 +147,7 @@ class MazelabStorage_Model_Dataprovider_Demo_Storage
         
         return $result;
     }
-    
+
     /**
      * sets storage with given data
      * 

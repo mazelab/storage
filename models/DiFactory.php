@@ -17,7 +17,12 @@ class MazelabStorage_Model_DiFactory
      * @var MazelabStorage_Model_ClientManager
      */
     static protected $_clientManager;
-    
+
+    /**
+     * @var Core_Model_SearchManager
+     */
+    static protected $_imports;
+
     /**
      * @var MazelabStorage_Model_NodeManager
      */
@@ -60,7 +65,21 @@ class MazelabStorage_Model_DiFactory
 
         return self::$_clientManager;
     }
-    
+
+    /**
+     * get actual instance of Core_Model_SearchManager with imports dataprovider
+     *
+     * @return Core_Model_SearchManager
+     */
+    static public function getImports()
+    {
+        if (!self::$_imports instanceof Core_Model_SearchManager) {
+            self::$_imports = self::newImportSearch();
+        }
+
+        return self::$_imports;
+    }
+
     /**
      * get actual instance of MazelabStorage_Model_NodeManager
      * 
@@ -122,7 +141,21 @@ class MazelabStorage_Model_DiFactory
     {
         return new MazelabStorage_Model_ClientManager();
     }
-    
+
+    /**
+     * returns new instance of Core_Model_SearchManager with the
+     * imports dataprovider
+     *
+     * @return Core_Model_SearchManager
+     */
+    static public function newImportSearch()
+    {
+        $searchManager = new Core_Model_SearchManager();
+        $searchManager->setProvider(MazelabStorage_Model_Dataprovider_DiFactory::getImports());
+
+        return $searchManager;
+    }
+
     /**
      * get new instance of MazelabStorage_Model_NodeManager
      * 

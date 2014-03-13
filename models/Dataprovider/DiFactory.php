@@ -31,6 +31,13 @@ class MazelabStorage_Model_Dataprovider_DiFactory
      * @var MazelabStorage_Model_Dataprovider_Interface_Storage
      */
     static protected $_storage;
+
+    /**
+     * current instance of imports provider
+     *
+     * @var Core_Model_Dataprovider_Interface_Search
+     */
+    static protected $_imports;
     
     /**
      * returns the current adapter
@@ -44,6 +51,20 @@ class MazelabStorage_Model_Dataprovider_DiFactory
         }
 
         return self::$_adapter;
+    }
+
+    /**
+     * get imports instance
+     *
+     * @return Core_Model_Dataprovider_Interface_Search
+     */
+    static public function getImports()
+    {
+        if (!self::$_imports instanceof Core_Model_Dataprovider_Interface_Search) {
+            self::$_imports = self::newImports();
+        }
+
+        return self::$_imports;
     }
     
     /**
@@ -59,7 +80,28 @@ class MazelabStorage_Model_Dataprovider_DiFactory
 
         return self::$_storage;
     }
-    
+
+    /**
+     * returns new imports instance
+     *
+     * @return Core_Model_Dataprovider_Interface_Search
+     * @throws Core_Model_DataProvider_Exception
+     */
+    static public function newImports()
+    {
+        $currentAdapter = self::getAdapter();
+        $className = self::PROVIDER_CLASS_PATH_PRE . $currentAdapter . '_Imports';
+
+        $newOne = new $className();
+        if ($newOne instanceof Core_Model_Dataprovider_Interface_Search) {
+            return $newOne;
+        }
+
+        throw new Core_Model_DataProvider_Exception(
+            'The data provider: ' . $currentAdapter . ' doesn\'t have a valid imports implementation.'
+        );
+    }
+
     /**
      * returns new search instance
      * 

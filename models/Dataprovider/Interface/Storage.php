@@ -7,7 +7,14 @@
 
 interface MazelabStorage_Model_Dataprovider_Interface_Storage
 {
- 
+
+    /**
+     * counts storages with imported flag
+     *
+     * @return int
+     */
+    public function countStoragesWithImportedFlag();
+
     /**
      * deletes a certain storage
      * 
@@ -59,7 +66,7 @@ interface MazelabStorage_Model_Dataprovider_Interface_Storage
      * @return array
      */
     public function getStoragesByNode($nodeId);
-    
+
     /**
      * sets storage with given data
      * 

@@ -56,6 +56,8 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
                     ->addActionContext('indexclient', 'html')
                     ->addActionContext('indexadmin', 'html')
                     ->addActionContext('diff', 'json')
+                    ->addActionContext('imports', 'html')
+                    ->addActionContext('imports', 'json')
                     ->initContext();
         
         // set view messages from MessageManager
@@ -218,5 +220,34 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
         $identity = Zend_Auth::getInstance()->getIdentity();
         $this->_setPager($identity['_id']);
     }
-    
+
+    public function importsAction()
+    {
+        $pager = MazelabStorage_Model_DiFactory::getImports();
+        $form = new MazelabStorage_Form_EditImport();
+
+        $pager->setLimit($this->getParam('limit', 10));
+        if($this->getParam('term')) {
+            $pager->setSearchTerm($this->getParam('term'));
+        }
+
+        if($this->getParam('pagerAction') == 'last') {
+            $pager->last();
+        } else {
+            $pager->setPage($this->getParam('page', 1))->page();
+        }
+
+        if($this->getRequest()->isPost()) {
+            if($form->isValid($this->getRequest()->getPost())) {
+                $this->view->result = MazelabStorage_Model_DiFactory::getStorageManager()
+                    ->importStorage($form->getValue('storageId'), $form->getValue('clientId'));
+            } else {
+                Core_Model_DiFactory::getMessageManager()->setErrors($form->getMessages());
+            }
+        }
+
+        $this->view->form = $form;
+        $this->view->pager = $pager->asArray();
+    }
+
 }
