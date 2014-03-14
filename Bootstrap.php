@@ -22,6 +22,15 @@ class MazelabStorage_Bootstrap extends Zend_Application_Module_Bootstrap
         }
     }
 
+    protected function _initTranslate()
+    {
+        $translations = $aclPath = __DIR__ . '/data/locales/';
+        if (file_exists($translations) && Zend_Registry::getInstance()->isRegistered("Zend_Translate")){
+            $translate = Zend_Registry::getInstance()->get("Zend_Translate");
+            $translate->getAdapter()->addTranslation($translations);
+        }
+    }
+
     protected function _initPlugins()
     {
         $bootstrap = $this->getApplication();

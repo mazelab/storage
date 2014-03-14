@@ -21,8 +21,8 @@ class MazelabStorage_Form_Diff extends Zend_Form
         $optionsStatus = array(
             "label" => "The storage is",
             "multiOptions" => array(
-                "" => "deactivated",
-                "1" => "activated"
+                "" => "disabled",
+                "1" => "enabled"
             )
         );
         $optionsQuota = array(

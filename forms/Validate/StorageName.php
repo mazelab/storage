@@ -8,10 +8,10 @@
 class MazelabStorage_Form_Validate_StorageName extends Zend_Validate_Abstract
 {
     
-    const EXISTS  = 'exists';
+    CONST EXISTS  = 'exists';
  
     protected $_messageTemplates = array(
-        self::EXISTS  => "Storage '%value%' allready exists"
+        self::EXISTS  => "Storage '%value%' already exists"
     );
  
     public function isValid($value)

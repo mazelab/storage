@@ -11,7 +11,7 @@ class MazelabStorage_Model_ReportManager
     /**
      * message for checked imported storages
      */
-    CONST MESSAGE_CHECKED_IMPORTED_STORAGES = 'All imported storages were checked for the moment';
+    CONST MESSAGE_CHECKED_IMPORTED_STORAGES = 'All imported storages were checked';
 
     /**
      * message for unchecked imported storages

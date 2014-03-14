@@ -10,13 +10,13 @@
                href="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_enable') ?>" 
                style="<?= !$this->toBool('storage/status')? '' : 'display:none'; ?>">
                 <i class="icon-minus-sign"></i>
-                <?= $this->translate('Activate') ?>
+                <?= $this->translate('Enable') ?>
             </a>
             <a class="jsChangeState btn" title="<?= $this->translate('Deactivate') ?>"
                href="<?= $this->url(array($this->html('storage/_id')), 'mazelab-storage_disable') ?>"
                style="<?= $this->toBool('storage/status')? '' : 'display:none'; ?>">
                 <i class="icon-ok-sign"></i>
-                <?= $this->translate('Deactivate') ?>
+                <?= $this->translate('Disable') ?>
             </a>
         </div>
         <div class="row-fluid text-right cssStatusText cssBigItem">
@@ -31,7 +31,7 @@
         </div>
         <div class="row-fluid ">
             <div class="cssUserImage span2">
-                <img name="avatar" class="img-polaroid" alt="<?= $this->translate('avatar') ?>"
+                <img name="avatar" class="img-polaroid" alt="<?= $this->translate('Avatar') ?>"
                      src="<?= $this->baseUrl() ?>/img/dummy_domain_200.png">
             </div>
             <div class="span10">
@@ -138,11 +138,11 @@
     </div>
     <div id="jsConfirmDeleteStorage" class="modal hide fade">
         <div class="modal-body">
-            <p><?= $this->translate('Shall the Storge really be deleted?'); ?></p>
+            <p><?= $this->translate('Shall the storage really be deleted?'); ?></p>
         </div>
         <div class="modal-footer">
-            <a class="btn jsButtonCancel" data-dismiss="modal"><?= $this->translate('cancel'); ?></a>
-            <a class="btn btn-primary jsButtonDelete" data-dismiss="modal"><?= $this->translate('ok'); ?></a>
+            <a class="btn jsButtonCancel" data-dismiss="modal"><?= $this->translate('Cancel'); ?></a>
+            <a class="btn btn-primary jsButtonDelete" data-dismiss="modal"><?= $this->translate('Ok'); ?></a>
         </div>
     </div>
 </div>

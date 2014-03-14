@@ -59,8 +59,8 @@ class MazelabStorage_Form_Add extends Zend_Form
         $this->addElement('select', 'status', array(
             "label" => "The storage is",
             "multiOptions" => array(
-                "0" => "deactivated",
-                "1" => "activated"
+                "0" => "disabled",
+                "1" => "enabled"
             ),
             "value" => array(1)
         ));

@@ -1,0 +1,75 @@
+<?php
+
+return array(
+    'Storage' => 'Storage',
+    'Storages' => 'Storages',
+    'Avatar' => 'Avatar',
+    'Name' => 'Name',
+    'Client' => 'Mandant',
+    'Quota in MB' => 'Quota in MB',
+    'Node' => 'Knoten',
+    'Storage is' => 'Storage ist',
+    'Password' => 'Passwort',
+    'Confirm Password' => 'Passwort bestättigen',
+    'Cancel' => 'Abbrechen',
+    'Save' => 'Speichern',
+
+    'Status' => 'Status',
+    'Apply' => 'Anwenden',
+    'Request failed' => 'Anfrage fehlgeschlagen',
+
+    'Delete storage' => 'Storage löschen',
+    'Enable' => 'Aktivieren',
+    'Disable' => 'Deaktivieren',
+    'Online' => 'Online',
+    'Offline' => 'Offline',
+    'Change Password' => 'Passwort ändern',
+    'Ok' => 'Ok',
+    'Shall the storage really be deleted' => 'Soll der Storage wirklich gelöscht werden',
+
+    'New password' => 'Neues Passwort',
+    'Success' => 'Erfolg',
+
+    'List of unchecked imported storages' => 'Liste von ungeprüften Storages die importiert wurden',
+    'Please check the client assignments' => 'Bitte prüfe die Mandanten Zuordnung',
+    'Quota' => 'Quota',
+    'enabled' => 'aktiviert',
+    'disabled' => 'deaktiviert',
+    'Import' => 'Importieren',
+
+    'New storage' => 'Neuer Storage',
+    'Detail' => 'Detail',
+    'Edit' => 'Bearbeiten',
+    'All Storages of client %1$s' => 'Alle Storages von Mandant %1$s',
+    'Actions' => 'Aktionen',
+
+    'Search' => 'Suche',
+    'to start' => 'zum Anfang',
+    'to end' => 'zum Ende',
+    'of' => 'von',
+    'back' => 'zurück',
+    'next' => 'nächste',
+    'Your search did not return any results' => 'Deine Suche ergab keine Ergebnisse',
+
+    'Storage not found...' => 'Storage nicht gefunden...',
+    'Storage \'%value%\' already exists' => 'Storage \'%value%\' existiert bereits',
+    'Failed to delete storage %1$s' => 'Storage %1$s konnte nicht gelöscht werden',
+    'All imported storages were checked' => 'Alle importierten Storages wurden geprüft',
+    'There are imported storages. Please check the client assignment' => 'Es gibt importierte Storages. Bitte überprüfe die Mandaten Zuordnung',
+    'Storage %1$s was created' => 'Storage %1$s wurde erstellt',
+    'Storage %1$s was disabled' => 'Storage %1$s wurde deaktiviert',
+    'Storage %1$s was deleted' => 'Storage %1$s wurde gelöscht',
+    'Storage %1$s has been marked to be deleted' => 'Storage %1$s wurde zum löschen markiert',
+    'Storage %1$s was enabled' => 'Storage %1$s wurde aktiviert',
+    'Storage %1$s was assigned to node %2$s' => 'Storage %1$s wurde dem Knoten %2$s zugeordnet',
+    'Storage %1$s was unassigned from node %2$s' => 'Storage %1$s ist nicht mehr dem Knoten %2$s zugeordnet',
+    'Storage %1$s was updated' => 'Storage %1$s wurde aktualisiert',
+    'Differences in storage %1$s' => 'Differenzen in Storage %1$s',
+    'Resolved differences of storage %1$s' => 'Differenzen in Storage %1$s wurden gelöst',
+
+    'Edit storage' => 'Storage bearbeiten',
+    'Imports' => 'Importe',
+
+    'Only lowercase letters, digits and _ are allowed' => 'Nur Kleinbuchstaben, Ziffern und _ sind erlaubt',
+    'unassigned' => 'nicht zugewiesen'
+);
