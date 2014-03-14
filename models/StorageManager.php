@@ -7,19 +7,69 @@
 
 class MazelabStorage_Model_StorageManager
 {
-    
+
+    /**
+     * message when storage was successfully created
+     */
+    CONST MESSAGE_STORAGE_CREATED = 'Storage %1$s was created';
+
+    /**
+     * message when storage was disabled
+     */
+    CONST MESSAGE_STORAGE_DISABLED = 'Storage %1$s was disabled';
+
+    /**
+     * message when storage was deleted
+     */
+    CONST MESSAGE_STORAGE_DELETED = 'Storage %1$s was deleted';
+
+    /**
+     * message when storage should be removed from nodes and then to be deleted
+     */
+    CONST MESSAGE_STORAGE_DELETE_MARKED = 'Storage %1$s has been marked to be deleted';
+
+    /**
+     * message when storage was enabled
+     */
+    CONST MESSAGE_STORAGE_ENABLED = 'Storage %1$s was enabled';
+
+    /**
+     * message when storage was assigned to a node
+     */
+    CONST MESSAGE_STORAGE_NODE_ASSINGED = 'Storage %1$s was assigned to node %2$s';
+
+    /**
+     * message when node was unassigned
+     */
+    CONST MESSAGE_STORAGE_NODE_UNASSIGNED = 'Storage %1$s was unassigned from node %2$s';
+
+    /**
+     * message when storage was updated
+     */
+    CONST MESSAGE_STORAGE_UPDATE = 'Storage %1$s was updated';
+
     /**
      * @var string name of this module
      */
     CONST MODULE_NAME = 'storage';
-    
+
     /**
      * contains initialized storages
      * 
      * @var array|null
      */
     protected $_storages = array();
-    
+
+    /**
+     * get Logger instance
+     *
+     * @return Core_Model_Logger
+     */
+    protected function _getLogger()
+    {
+        return Core_Model_DiFactory::getLogger();
+    }
+
     /**
      * get storage provider
      * 
@@ -45,6 +95,28 @@ class MazelabStorage_Model_StorageManager
         }
         
         return $this->registerStorage($storageId, $data);
+    }
+
+    /**
+     * sets standard storage log params and saves it
+     *
+     * other log params should be set to _getLogger() before calling this method
+     *
+     * @param MazelabStorage_Model_ValueObject_Storage $storage storage instance
+     * @param string $type log type definition
+     * @param boolean $client message can also be viewed by the client
+     * @return string|null returns log id on success
+     */
+    protected function _logStorage(MazelabStorage_Model_ValueObject_Storage $storage, $type = Core_Model_Logger::TYPE_NOTIFICATION, $client = false)
+    {
+        if($client) {
+            $this->_getLogger()->setClientRef($storage->getData('clientId'));
+        }
+
+        $this->_getLogger()->setType($type)->setNodeRef($storage->getData('nodeId'))
+            ->setModuleRef(self::MODULE_NAME);
+
+        return $this->_getLogger()->save();
     }
 
     /**
@@ -80,7 +152,11 @@ class MazelabStorage_Model_StorageManager
         }
         
         $storage->apply();
-        
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_NODE_ASSINGED)
+            ->setMessageVars($storage->getName(), $storage->getData('nodeName'));
+        $this->_logStorage($storage, Core_Model_Logger::TYPE_WARNING);
+
         return true;
     }
     
@@ -103,11 +179,15 @@ class MazelabStorage_Model_StorageManager
         }
         
         $storage = MazelabStorage_Model_DiFactory::newStorage();
-        if(!$storage->setLoaded(true)->setData($data, $encryptPassword)->save()) {
+        if(!$storage->setLoaded(true)->setData($data, $encryptPassword)->setFlags()->save()) {
             return false;
         }
         
         $storage->apply();
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_CREATED)->setData($storage->getData())
+            ->setMessageVars($storage->getName());
+        $this->_logStorage($storage);
 
         return $storage->getId();
     }
@@ -137,8 +217,19 @@ class MazelabStorage_Model_StorageManager
         if(!($storage = $this->getStorage($storageId))) {
             return false;
         }
-        
-        return $this->_getProvider()->deleteStorage($storageId);
+
+        if(!$this->_getProvider()->deleteStorage($storageId)) {
+
+        }
+
+        if(array_key_exists($storageId, $this->_storages)) {
+            unset($this->_storages[$storageId]);
+        }
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETED)->setMessageVars($storage->getLabel());
+        $this->_logVhost($storage);
+
+        return true;
     }
     
     /**
@@ -152,8 +243,15 @@ class MazelabStorage_Model_StorageManager
         if(!($storage = $this->getStorage($storageId))) {
             return false;
         }
+
+        if(!$storage->disable()) {
+            return false;
+        }
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DISABLED)->setMessageVars($storage->getName());
+        $this->_logStorage($storage);
         
-        return $storage->disable();
+        return true;
     }
     
     /**
@@ -167,8 +265,15 @@ class MazelabStorage_Model_StorageManager
         if(!($storage = $this->getStorage($storageId))) {
             return false;
         }
-        
-        return $storage->enable();
+
+        if(!$storage->enable()) {
+            return false;
+        }
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_ENABLED)->setMessageVars($storage->getName());
+        $this->_logStorage($storage);
+
+        return true;
     }
     
     /**
@@ -188,8 +293,15 @@ class MazelabStorage_Model_StorageManager
         if(!$storage->getNode()) { 
             return $this->deleteStorage($storageId);
         }
-        
-        return $storage->setDeleteFlag();
+
+        if(!$storage->setDeleteFlag()) {
+            return false;
+        }
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETE_MARKED)->setMessageVars($storage->getName());
+        $this->_logStorage($storage);
+
+        return true;
     }
     
     /**
@@ -421,7 +533,15 @@ class MazelabStorage_Model_StorageManager
             return true;
         }
 
-        return $storage->unsetProperty('nodeId')->unsetProperty('nodeName')->save();
+        $oldNodeName = $storage->getData('nodeName');
+        if(!$storage->unsetProperty('nodeId')->unsetProperty('nodeName')->save()) {
+            return false;
+        }
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_NODE_UNASSIGNED)->setMessageVars($storage->getName(), $oldNodeName);
+        $this->_logStorage($storage, Core_Model_Logger::TYPE_WARNING);
+
+        return true;
     }
     
     /**
@@ -453,6 +573,9 @@ class MazelabStorage_Model_StorageManager
         }
         
         $storage->apply(true);
+
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_UPDATE)->setMessageVars($storage->getName())->setData($data);
+        $this->_logStorage($storage);
         
         return true;
     }

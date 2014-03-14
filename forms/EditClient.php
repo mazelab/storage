@@ -7,7 +7,11 @@
 
 class MazelabStorage_Form_EditClient extends Zend_Form
 {
-    
+
+    protected $_elementDecorators = array(
+        'ViewHelper'
+    );
+
     public function init()
     {
         $this->addElement('password', 'password', array(

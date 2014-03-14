@@ -54,7 +54,7 @@ class MazelabStorage_Form_Import extends Zend_Form
             'label' => 'Password',
             'required' => true
         ));
-       
+
         $this->initNodeSelect();
     }
     
