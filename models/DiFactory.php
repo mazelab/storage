@@ -24,6 +24,11 @@ class MazelabStorage_Model_DiFactory
     static protected $_imports;
 
     /**
+     * @var MazelabStorage_Model_IndexManager
+     */
+    static protected $_indexManager;
+
+    /**
      * @var MazelabStorage_Model_NodeManager
      */
     static protected $_nodeManager;
@@ -78,6 +83,20 @@ class MazelabStorage_Model_DiFactory
         }
 
         return self::$_imports;
+    }
+
+    /**
+     * get actual instance of index manager
+     *
+     * @return MazelabStorage_Model_IndexManager
+     */
+    static public function getIndexManager()
+    {
+        if (!self::$_indexManager instanceof MazelabStorage_Model_IndexManager) {
+            self::$_indexManager = self::newIndexManager();
+        }
+
+        return self::$_indexManager;
     }
 
     /**
@@ -154,6 +173,16 @@ class MazelabStorage_Model_DiFactory
         $searchManager->setProvider(MazelabStorage_Model_Dataprovider_DiFactory::getImports());
 
         return $searchManager;
+    }
+
+    /**
+     * get new instance of MazelabStorage_Model_IndexManager
+     *
+     * @return MazelabStorage_Model_IndexManager
+     */
+    static public function newIndexManager()
+    {
+        return new MazelabStorage_Model_IndexManager();
     }
 
     /**

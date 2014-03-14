@@ -28,8 +28,9 @@ class MazelabStorage_Bootstrap extends Zend_Application_Module_Bootstrap
         $bootstrap->bootstrap('FrontController');
         $front = $bootstrap->getResource('FrontController');
         
-        $front->registerPlugin(new MazelabStorage_Model_Plugins_Navigation);
-        $front->registerPlugin(new MazelabStorage_Model_Plugins_Layout);
+        $front->registerPlugin(new MazelabStorage_Model_Plugins_Navigation())
+              ->registerPlugin(new MazelabStorage_Model_Plugins_Layout())
+              ->registerPlugin(new MazelabStorage_Model_Plugins_Events());
     }
     
     /**

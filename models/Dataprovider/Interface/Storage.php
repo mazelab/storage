@@ -39,7 +39,23 @@ interface MazelabStorage_Model_Dataprovider_Interface_Storage
      * @return array|null
      */
     public function getStorage($id, $clientId = null);
-    
+
+    /**
+     * get storage by name
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function getStorageByName($name);
+
+    /**
+     * gets all storages
+     *
+     * @return array
+     */
+    public function getStorages();
+
     /**
      * gets all storages of a certain client
      * 
@@ -48,15 +64,6 @@ interface MazelabStorage_Model_Dataprovider_Interface_Storage
      * @return array
      */
     public function getStoragesByClient($clientId);
-    
-    /**
-     * get storage by name
-     * 
-     * @param string $name
-     * 
-     * @return array
-     */
-    public function getStorageByName($name);
     
     /**
      * gets all storages of a certain node

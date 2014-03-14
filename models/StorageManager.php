@@ -36,7 +36,7 @@ class MazelabStorage_Model_StorageManager
     /**
      * message when storage was assigned to a node
      */
-    CONST MESSAGE_STORAGE_NODE_ASSINGED = 'Storage %1$s was assigned to node %2$s';
+    CONST MESSAGE_STORAGE_NODE_ASSIGNED = 'Storage %1$s was assigned to node %2$s';
 
     /**
      * message when node was unassigned
@@ -153,7 +153,7 @@ class MazelabStorage_Model_StorageManager
         
         $storage->apply();
 
-        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_NODE_ASSINGED)
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_NODE_ASSIGNED)
             ->setMessageVars($storage->getName(), $storage->getData('nodeName'));
         $this->_logStorage($storage, Core_Model_Logger::TYPE_WARNING);
 
@@ -188,6 +188,8 @@ class MazelabStorage_Model_StorageManager
         $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_CREATED)->setData($storage->getData())
             ->setMessageVars($storage->getName());
         $this->_logStorage($storage);
+
+        MazelabStorage_Model_DiFactory::getIndexManager()->setStorage($storage->getId());
 
         return $storage->getId();
     }
@@ -228,6 +230,8 @@ class MazelabStorage_Model_StorageManager
 
         $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETED)->setMessageVars($storage->getLabel());
         $this->_logVhost($storage);
+
+        MazelabStorage_Model_DiFactory::getIndexManager()->unsetStorage($storageId);
 
         return true;
     }
@@ -350,8 +354,24 @@ class MazelabStorage_Model_StorageManager
         }
         
         return $storage->getData();
-    }    
-    
+    }
+
+    /**
+     * get all storage instances
+     *
+     * @return array contains MazelabStorage_Model_ValueObject_Storage
+     */
+    public function getStorages()
+    {
+        foreach($this->_getProvider()->getStorages() as $storageId => $storage) {
+            if(!array_key_exists($storageId, $this->_storages)) {
+                $this->registerStorage($storageId, $storage);
+            }
+        }
+
+        return $this->_storages;
+    }
+
     /**
      * gets all storages of a certain client
      * 
@@ -367,10 +387,10 @@ class MazelabStorage_Model_StorageManager
         
         $storages = array();
         foreach($this->_getProvider()->getStoragesByClient($clientId) as $storageId => $storage) {
-            if(!array_key_exists($storageId, $this->_storages) &&
-                    $this->registerStorage($storageId, $storage)) {
-                $storages[$storageId] = $this->_storages[$storageId];
+            if(!array_key_exists($storageId, $this->_storages) && !$this->registerStorage($storageId, $storage)) {
+                continue;
             }
+            $storages[$storageId] = $this->_storages[$storageId];
         }
         
         return $storages;
@@ -399,7 +419,7 @@ class MazelabStorage_Model_StorageManager
      * @param string $name name of the storage
      * @return MazelabStorage_Model_ValueObject_Storage|null
      */
-    public function getStoragesByName($name)
+    public function getStorageByName($name)
     {
         if(!$name || !($storage = $this->_getProvider()->getStorageByName($name))) {
             return null;
@@ -427,10 +447,10 @@ class MazelabStorage_Model_StorageManager
         
         $storages = array();
         foreach($this->_getProvider()->getStoragesByNode($nodeId) as $storageId => $storage) {
-            if(!array_key_exists($storageId, $this->_storages) &&
-                    $this->registerStorage($storageId, $storage)) {
-                $storages[$storageId] = $this->_storages[$storageId];
+            if(!array_key_exists($storageId, $this->_storages) && !$this->registerStorage($storageId, $storage)) {
+                continue;
             }
+            $storages[$storageId] = $this->_storages[$storageId];
         }
         
         return $storages;

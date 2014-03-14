@@ -89,12 +89,12 @@ class MazelabStorage_Model_Dataprovider_Demo_Storage
         
         return array();
     }
-    
+
     /**
      * gets storage by name
-     * 
+     *
      * @param string $name
-     * 
+     *
      * @return array
      */
     public function getStorageByName($name)
@@ -104,10 +104,20 @@ class MazelabStorage_Model_Dataprovider_Demo_Storage
                 return $storage;
             }
         }
-        
+
         return array();
     }
-    
+
+    /**
+     * gets all storages
+     *
+     * @return array
+     */
+    public function getStorages()
+    {
+        return $this->_getCollection(self::COLLECTION_NAME);
+    }
+
     /**
      * gets all storages of a certain client
      * 

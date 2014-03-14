@@ -112,6 +112,23 @@ class MazelabStorage_Model_Dataprovider_Core_Storage
         
         return $storage;
     }
+
+    /**
+     * gets all storages
+     *
+     * @return array
+     */
+    public function getStorages()
+    {
+        $result = array();
+
+        foreach($this->_getStorageCollection()->find() as $storageId => $storage) {
+            $storage[self::KEY_ID] = $storageId;
+            $result[$storageId] = $storage;
+        }
+
+        return $result;
+    }
     
     /**
      * gets all storages of a certain client

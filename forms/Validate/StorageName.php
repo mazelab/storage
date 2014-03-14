@@ -35,7 +35,7 @@ class MazelabStorage_Form_Validate_StorageName extends Zend_Validate_Abstract
             return true;
         }
         
-        if(($storage = MazelabStorage_Model_DiFactory::getStorageManager()->getStoragesByName($value))) {
+        if(($storage = MazelabStorage_Model_DiFactory::getStorageManager()->getStorageByName($value))) {
             $this->_error(self::EXISTS, $value);
             return false;
         }
