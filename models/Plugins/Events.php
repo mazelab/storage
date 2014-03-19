@@ -1,6 +1,6 @@
 <?php
 /**
- * nginx
+ * storage
  *
  * @license http://opensource.org/licenses/MIT MIT
  */

@@ -228,8 +228,8 @@ class MazelabStorage_Model_StorageManager
             unset($this->_storages[$storageId]);
         }
 
-        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETED)->setMessageVars($storage->getLabel());
-        $this->_logVhost($storage);
+        $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETED)->setMessageVars($storage->getName());
+        $this->_logStorage($storage);
 
         MazelabStorage_Model_DiFactory::getIndexManager()->unsetStorage($storageId);
 
