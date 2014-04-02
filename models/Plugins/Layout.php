@@ -16,11 +16,9 @@ class MazelabStorage_Model_Plugins_Layout extends Zend_Controller_Plugin_Abstrac
     public function routeShutdown($request)
     {
         if ($request->getModuleName() == "mazelab-storage"){
-            $view = Zend_Layout::getMvcInstance()->getView();
-//            $view->headLink()->prependStylesheet("/module/mazelab/storage/css/default.css");
-            
             if(($identity = Zend_Auth::getInstance()->getIdentity()) && array_key_exists('group', $identity) &&
                     $identity['group'] === Core_Model_ClientManager::GROUP_CLIENT) {
+                $view = Zend_Layout::getMvcInstance()->getView();
                 $view->headLink()->prependStylesheet("/module/mazelab/storage/css/client.css");
             }
         }

@@ -21,7 +21,10 @@ class MazelabStorage_Model_Dataprovider_Core_Storage
     {
         $result = array();
         $query = array(
-            self::KEY_IMPORTED => true
+            self::KEY_IMPORTED => true,
+            self::KEY_DELETE => array(
+                '$ne' => true
+            )
         );
 
         return $this->_getStorageCollection()->find($query)->count();

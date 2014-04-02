@@ -305,6 +305,10 @@ class MazelabStorage_Model_StorageManager
         $this->_getLogger()->setMessage(self::MESSAGE_STORAGE_DELETE_MARKED)->setMessageVars($storage->getName());
         $this->_logStorage($storage);
 
+        if($storage->getData('imported')) {
+            MazelabStorage_Model_DiFactory::getReportManager()->writeCheckedImportLog();
+        }
+
         return true;
     }
     

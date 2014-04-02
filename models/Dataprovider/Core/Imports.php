@@ -27,7 +27,10 @@ class MazelabStorage_Model_Dataprovider_Core_Imports
     {
         $result = array();
         $query = array(
-            self::KEY_IMPORTED => true
+            self::KEY_IMPORTED => true,
+            self::KEY_DELETE => array(
+                '$ne' => true
+            )
         );
 
         if ($searchTerm) {
@@ -75,7 +78,10 @@ class MazelabStorage_Model_Dataprovider_Core_Imports
     {
         $result = array();
         $query = array(
-            self::KEY_IMPORTED => true
+            self::KEY_IMPORTED => true,
+            self::KEY_DELETE => array(
+                '$ne' => true
+            )
         );
         
         if ($searchTerm) {

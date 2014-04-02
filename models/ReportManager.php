@@ -72,7 +72,7 @@ class MazelabStorage_Model_ReportManager
      */
     protected function _writeUncheckedImportLog(Core_Model_ValueObject_Node $node)
     {
-        if(!MazelabStorage_Model_DiFactory::getStorageManager()->countStoragesWithImportedFlag() === 0) {
+        if(MazelabStorage_Model_DiFactory::getStorageManager()->countStoragesWithImportedFlag() === 0) {
             return false;
         }
 
