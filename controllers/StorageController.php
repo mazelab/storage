@@ -123,6 +123,11 @@ class MazelabStorage_StorageController extends Zend_Controller_Action
 
         $this->view->form = $form;
         $this->view->storage = $storage->getData();
+
+        $navigation = $this->view->navigation();
+        if (($active = $navigation->findActive($navigation->getContainer()))){
+            $active["page"]->setLabel($this->view->translate('Differences in storage %1$s', $storage->getName()));
+        }
     }
     
     public function deleteAction()
