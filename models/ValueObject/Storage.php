@@ -302,12 +302,17 @@ class MazelabStorage_Model_ValueObject_Storage
      */
     public function setDeleteFlag()
     {
-        if(!$this->setData(array('delete' => true))->save()) {
+        $imported = $this->getData('imported');
+        if(!$this->setData(array('delete' => true))->unsetProperty('imported')->save()) {
             return false;
         }
-        
+
+        if($imported) {
+            MazelabStorage_Model_DiFactory::getReportManager()->writeCheckedImportLog();
+        }
+
         $this->apply();
-        
+
         return true;
     }
     

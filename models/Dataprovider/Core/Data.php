@@ -19,11 +19,6 @@ class MazelabStorage_Model_Dataprovider_Core_Data
     CONST KEY_CLIENTID = 'clientId';
 
     /**
-     * name of deleted flag property
-     */
-    CONST KEY_DELETE = 'delete';
-
-    /**
      * name of the id key
      */
     CONST KEY_ID = '_id';
